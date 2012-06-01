@@ -1,0 +1,4 @@
+#!/bin/sh -e
+adb remount
+adb push image/DISP_V2_AMP_V3_AUD_7419/hw/ /system/lib/hw
+adb push image/DISP_V2_AMP_V3_AUD_7419/modules/ /system/lib/modules

@@ -1,0 +1,56 @@
+0说明：
+
+调试信息DebugMsgLevel等级分0，1，2，3           //没有用的那些还留着（前三个以Fly开头的）
+
+debugMsgGlobalLevel		=	0	//0关	1、2、3各种等级
+
+debugMsgKeyLevel		=	0	//0关	1、2、3各种等级
+debugMsgAudioLevel		=	0
+FlyBTMsgLevel			=	0
+debugMsgDVDLevel		=	3
+debugMsgVideoLevel		=	0
+debugMsgSystemLevel		=	0
+debugMsgRadioLevel		=	0
+FlyCarbodyMsgLevel		=	0
+debugMsgRadioLevel		=	0
+FlyExBoxMsgLevel		=	0
+debugMsgTpmsLevel		=	0
+debugMsgTVLevel			=	0
+FlyAssistDisplayMsgLevel	=	0
+
+不检查驱动之间的消息响应
+FlyIngoreMsgResponse		=	1
+
+强制打开OSD调试
+bOSDDemoMode			=	0	//0关	1开
+
+ACC OFF不关背光
+bACCOffLightOn		        =	0      //0关	1开
+
+7419IIC频率
+IICSpeadOnAudio			=	50000
+
+//自动重启时间设定//若要让以下生效，此值必须为1
+bSystemResetUseExtConfig	=	0
+
+//至少多少天
+iSystemResetAtLeastDays	        =	0
+//在什么时
+iSystemResetOnHour		=	12
+//在什么分
+iSystemResetOnMinute		=	20
+
+//关机后至少多少分钟
+iSystemResetInnerMin		=       2
+
+//自动进入最低功耗设定//持续待机多长时间后进入最低功耗，分钟5*24*60=7200
+iSystemResetPowerOffMin         =       4000
+
+//系统至少能运行多少分钟，30*24*60=43200
+iSystemResetCanRunLess		=	4000
+
+
+
+
+end
+结束符

@@ -1,0 +1,75 @@
+#ifndef TYPES_DEF_H_
+#define TYPES_DEF_H_
+
+#include "ShareMemoryStruct.h"
+
+
+// 版本号
+#ifndef VERSION_MAJOR
+#define VERSION_MAJOR  1
+#endif
+
+#ifndef VERSION_MINOR
+#define VERSION_MINOR 0
+#endif
+
+
+//各个so文件的ID号
+#define HAL_DEVICE_NAME_SERVICEHAL  "servicehal" //底层内部的HAL
+
+#define HAL_DEVICE_NAME_AUDIO 		"audio"
+#define HAL_DEVICE_NAME_VIDEO 		"video"
+#define HAL_DEVICE_NAME_RADIO 		"radio"
+#define HAL_DEVICE_NAME_DVD   		"dvd"
+#define HAL_DEVICE_NAME_BT    		"bt"
+#define HAL_DEVICE_NAME_KEY   		"key"
+#define HAL_DEVICE_NAME_SYSTEM 		"system"
+#define HAL_DEVICE_NAME_EXDISPLAY 	"exdisplay"
+#define HAL_DEVICE_NAME_XMRADIO 	"xmradio"
+#define HAL_DEVICE_NAME_TPMS   		"tpms"
+#define HAL_DEVICE_NAME_TV     		"tv"
+#define HAL_DEVICE_NAME_GLOBAL 		"global"
+#define HAL_DEVICE_NAME_AC 			"ac"
+
+
+
+//各个设备的名称，一定要和ID号相同
+#define FLYSYSTEM_DEVICE_NAME  		HAL_DEVICE_NAME_SYSTEM
+#define FLYGLOBAL_DEVICE_NAME  		HAL_DEVICE_NAME_GLOBAL
+#define FLYFORYOU_DEVICE_NAME   	HAL_DEVICE_NAME_DVD
+#define FLYAUDIO_DEVICE_NAME      	HAL_DEVICE_NAME_AUDIO
+#define FLYCOLLEX_DEVICE_NAME  		HAL_DEVICE_NAME_BT
+#define FLYRADIO_DEVICE_NAME   		HAL_DEVICE_NAME_RADIO
+#define FLYXMRADIO_DEVICE_NAME  	HAL_DEVICE_NAME_XMRADIO
+#define FLYEXDISPLAY_DEVICE_NAME    HAL_DEVICE_NAME_EXDISPLAY
+#define FLYVIDEO_DEVICE_NAME        HAL_DEVICE_NAME_VIDEO
+#define FLYKEY_DEVICE_NAME  		HAL_DEVICE_NAME_KEY
+#define FLYTPMS_DEVICE_NAME  		HAL_DEVICE_NAME_TPMS
+#define FLYTV_DEVICE_NAME    		HAL_DEVICE_NAME_TV
+#define FLYAC_DEVICE_NAME    		HAL_DEVICE_NAME_AC
+
+
+#define FLYSERVICEHAL_DEICE_NAME       HAL_DEVICE_NAME_SERVICEHAL
+
+
+//hal层返回FD号（大于0的数）
+#ifndef HAL_RETURN_FD
+#define HAL_RETURN_FD
+#define HAL_ERROR_RETURN_FD        (-1)
+#define HAL_SYSTEM_RETURN_FD 		1
+#define HAL_GLOBAL_RETURN_FD 		2
+#define HAL_DVD_RETURN_FD 			3
+#define HAL_BT_RETURN_FD 			4
+#define HAL_AUDIO_RETURN_FD 		5
+#define HAL_XMRADIO_RETURN_FD 		6
+#define HAL_EXDISPLAY_RETURN_FD 	7
+#define HAL_VIDEO_RETURN_FD 		8
+#define HAL_KEY_RETURN_FD 			9
+#define HAL_TPMS_RETURN_FD 			10
+#define HAL_TV_RETURN_FD 			11
+#define HAL_SERVICEHAL_RETURN_FD 	12
+#define HAL_RADIO_RETURN_FD         13
+#define HAL_AC_RETURN_FD			14
+#endif
+
+#endif

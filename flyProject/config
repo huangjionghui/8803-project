@@ -1,0 +1,187 @@
+#!/bin/bash -e
+DIS_V=""
+AMP_V=""
+AUD_V=""
+author="FlyAudio"
+version="1.0.0"
+
+PCB_DISP=""
+PCB_AMP=""
+AUDIO_RADIO=""
+PCB_VERSION=""
+CHAR="_"
+
+BOARD_TYPE=""
+SOURCE_DIR_PATH="/home/android2.3_newdesk/sDK_2306_20110812"
+PROJECT_DIR_PATH="external/my_dir/flyProject"
+HAL_SO_PATH="out/target/product/m801/system/lib/hw/"
+HAL_LIB_PATH="out/target/product/m801/obj/SHARED_LIBRARIES/"
+HAL_FILE_NAME="dvd audio exdisplay global radio video \
+					xmradio bt servicehal tpms ac system key tv"
+		   
+create_board_config()
+{
+	echo ""
+	echo ""
+	echo ""
+	echo ""
+	echo "#################################################################################"
+	echo "${author} config PCB is:"
+	echo "PCB_DISP	= ${PCB_DISP}"
+	echo "PCB_AMP		= ${PCB_AMP}"
+	echo "AUDIO		= ${AUDIO_RADIO}"
+	echo "version		= ${version}"
+	echo "#################################################################################"
+	rm -f include/board_def.h
+	echo "#ifndef __BOARD_DEF_H__"							>   board_def.h
+	echo "#define __BOARD_DEF_H__"							>>  board_def.h
+	echo ""													>>  board_def.h
+	echo "#define PCB_8803_DISP_V1	11"						>>  board_def.h
+	echo "#define PCB_8803_DISP_V2	12"						>>  board_def.h
+	echo "#define PCB_8803_DISP_SEL	${PCB_DISP}"  			>>  board_def.h
+	echo ""													>>  board_def.h
+	echo "#define PCB_8803_AMP_V1	21"						>>  board_def.h
+	echo "#define PCB_8803_AMP_V2	22"						>>  board_def.h
+	echo "#define PCB_8803_AMP_V3	23"						>>  board_def.h
+
+	echo "#define PCB_8803_AMP_SEL	${PCB_AMP}"  			>>  board_def.h
+	echo ""													>>  board_def.h
+	echo "#define AUDIO_RADIO_7419_7541	 1"					>>  board_def.h
+	echo "#define AUDIO_RADIO_7741_7000	 2"					>>  board_def.h
+	echo "#define AUDIO_RADIO_CHIP_SEL   ${AUDIO_RADIO}"  	>>  board_def.h
+	echo ""													>>  board_def.h
+	echo "#endif"											>>  board_def.h
+	mv board_def.h include/
+}
+
+select_board_type()
+{
+	if [ "$1" = "DISP_V1" ]; then
+		DIS_V="$1"
+		PCB_DISP="PCB_8803_DISP_V1"
+	else
+		DIS_V="$1"
+		PCB_DISP="PCB_8803_DISP_V2"
+	fi
+
+	if [ "$2" = "AMP_V1" ]; then
+		AMP_V="$2"
+		PCB_AMP="PCB_8803_AMP_V1"
+	elif [ "$2" = "AMP_V2" ]; then
+		AMP_V="$2"
+		PCB_AMP="PCB_8803_AMP_V2"
+	elif [ "$2" = "AMP_V3" ]; then
+		AMP_V="$2"
+		PCB_AMP="PCB_8803_AMP_V3"
+	fi
+
+	if [ "$3" = "AUD_7741" ]; then
+		AUD_V="$3"
+		AUDIO_RADIO="AUDIO_RADIO_7741_7000"
+	else
+		AUD_V="$3"
+		AUDIO_RADIO="AUDIO_RADIO_7419_7541"
+	fi
+	
+	create_board_config
+}
+
+make_driver_project()
+{
+	cd ${SOURCE_DIR_PATH}/${PROJECT_DIR_PATH}/driver/
+	make
+}
+make_hal_project()
+{
+	cd ${SOURCE_DIR_PATH}/
+	
+	
+	source build/envsetup.sh
+	lunch 9
+	mmm ${PROJECT_DIR_PATH}/hal
+}
+
+copy_hal_and_driver_files()
+{
+	cd ${SOURCE_DIR_PATH}/${PROJECT_DIR_PATH}/
+	! [ -d image ] && mkdir image
+	! [ -d image/${DIS_V}${CHAR}${AMP_V}${CHAR}${AUD_V} ] && mkdir image/${DIS_V}${CHAR}${AMP_V}${CHAR}${AUD_V}
+	! [ -d image/${DIS_V}${CHAR}${AMP_V}${CHAR}${AUD_V}/hw ] && mkdir image/${DIS_V}${CHAR}${AMP_V}${CHAR}${AUD_V}/hw
+	! [ -d image/${DIS_V}${CHAR}${AMP_V}${CHAR}${AUD_V}/modules ] && mkdir image/${DIS_V}${CHAR}${AMP_V}${CHAR}${AUD_V}/modules
+
+	for file in ${HAL_FILE_NAME}; do 
+		cp ${SOURCE_DIR_PATH}/${HAL_SO_PATH}"$file".default.so image/${DIS_V}${CHAR}${AMP_V}${CHAR}${AUD_V}/hw
+	done
+	
+	rm -fr ${SOURCE_DIR_PATH}/out/target/product/m801/obj/STATIC_LIBRARIES/libbtdfu_intermediates
+	for file in ${HAL_FILE_NAME}; do 
+		rm -fr ${SOURCE_DIR_PATH}/${HAL_LIB_PATH}"$file".default_intermediates/
+		rm -f  ${SOURCE_DIR_PATH}/${HAL_SO_PATH}"$file".default.so
+	done
+
+	
+	cd ${SOURCE_DIR_PATH}/${PROJECT_DIR_PATH}/driver/
+	for file in `ls . | grep '^Fly'`; do 
+		cd "$file"
+		cp *.ko ${SOURCE_DIR_PATH}/${PROJECT_DIR_PATH}/image/${DIS_V}${CHAR}${AMP_V}${CHAR}${AUD_V}/modules
+		cd ../
+	done
+	make clean 
+}
+do_loop_make_project()
+{
+	make_hal_project
+	make_driver_project
+	copy_hal_and_driver_files
+}
+
+make_all()
+{
+	select_board_type DISP_V2 AMP_V3 AUD_7419
+	do_loop_make_project
+	
+	select_board_type DISP_V2 AMP_V1 AUD_7741
+	do_loop_make_project
+}
+make_project()
+{
+	do_loop_make_project
+}
+
+if ! [ $1 ]; then
+echo "=============================================================================="
+echo "Please select the board type:"
+#echo "DISP_V1_AMP_V1_AUD_7419:(1)"
+#echo "DISP_V2_AMP_V2_AUD_7419:(2)"
+echo "DISP_V2_AMP_V3_AUD_7419:(3)"
+echo ""
+#echo "DISP_V1_AMP_V1_AUD_7741:(4)"
+echo "DISP_V2_AMP_V1_AUD_7741:(5)"
+#echo "DISP_V2_AMP_V2_AUD_7741:(6)"
+echo "make all 	       :(7)"
+echo "=============================================================================="
+read BOARD_TYPE
+echo ""
+echo ""
+
+case ${BOARD_TYPE} in
+	#1) select_board_type DISP_V1 AMP_V1 AUD_7419;;
+	#2) select_board_type DISP_V2 AMP_V2 AUD_7419;;
+	3) select_board_type DISP_V2 AMP_V3 AUD_7419;;
+	#4) select_board_type DISP_V1 AMP_V1 AUD_7741;;
+	5) select_board_type DISP_V2 AMP_V1 AUD_7741;;
+	#6) select_board_type DISP_V2 AMP_V2 AUD_7741;;
+	7) make_all;
+	   exit 0;;
+	*) echo "you select is err" && exit 1;;
+esac
+
+make_project
+
+else
+	make_all
+fi
+
+exit 0
+
+
